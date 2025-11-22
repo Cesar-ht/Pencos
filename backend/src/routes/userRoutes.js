@@ -35,7 +35,7 @@ router.get('/buscar/:cedula', proteger, soloAdmin, async (req, res) => {
 // [ADMIN] Crear usuario (cédula = usuario = contraseña)
 router.post('/crear', proteger, soloAdmin, async (req, res) => {
   try {
-    const { cedula, nombre, email } = req.body;
+    const { cedula, nombre } = req.body;
 
     if (!cedula || !nombre) {
       return res.status(400).json({ message: 'Cédula y nombre son requeridos' });
@@ -49,7 +49,6 @@ router.post('/crear', proteger, soloAdmin, async (req, res) => {
     const usuario = await User.create({
       cedula,
       nombre,
-      email: email || null,
       contraseña: cedula
     });
 

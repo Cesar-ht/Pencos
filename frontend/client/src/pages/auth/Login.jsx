@@ -113,17 +113,6 @@ const Login = () => {
             {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
 
-          <div className="form__links">
-            <p>
-              ¿No tienes cuenta?<br />
-              <a href="/registrar" onClick={(e) => {
-                e.preventDefault();
-                navigate('/registrar');
-              }}>
-                Regístrate aquí
-              </a>
-            </p>
-          </div>
         </form>
       </section>
     </main>

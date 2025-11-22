@@ -9,11 +9,10 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
   
-  // Form nuevo usuario
+  // Form nuevo usuario (sin email)
   const [nuevoUsuario, setNuevoUsuario] = useState({
     cedula: '',
-    nombre: '',
-    email: ''
+    nombre: ''
   });
 
   // Form subir certificado
@@ -78,13 +77,16 @@ const AdminPanel = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(nuevoUsuario)
+        body: JSON.stringify({
+          cedula: nuevoUsuario.cedula,
+          nombre: nuevoUsuario.nombre
+        })
       });
       const data = await res.json();
 
       if (res.ok) {
         mostrarMensaje('exito', `Usuario ${nuevoUsuario.cedula} creado. Contraseña: ${nuevoUsuario.cedula}`);
-        setNuevoUsuario({ cedula: '', nombre: '', email: '' });
+        setNuevoUsuario({ cedula: '', nombre: '' });
         cargarUsuarios();
       } else {
         mostrarMensaje('error', data.message);
@@ -149,6 +151,7 @@ const AdminPanel = () => {
         mostrarMensaje('exito', 'Certificado subido correctamente');
         setCertForm({ cedula: '', fechaEmision: '', fechaVencimiento: '', archivo: null });
         setUsuarioEncontrado(null);
+        cargarUsuarios();
       } else {
         mostrarMensaje('error', data.message);
       }
@@ -193,7 +196,7 @@ const AdminPanel = () => {
           <span>ITSA Admin</span>
         </div>
         <button className="admin__logout" onClick={handleLogout}>
-          🚪 Cerrar Sesión
+          Cerrar Sesión
         </button>
       </nav>
 
@@ -210,19 +213,19 @@ const AdminPanel = () => {
           className={`admin__tab ${activeTab === 'usuarios' ? 'active' : ''}`}
           onClick={() => setActiveTab('usuarios')}
         >
-          👥 Usuarios
+          Usuarios
         </button>
         <button 
           className={`admin__tab ${activeTab === 'crear' ? 'active' : ''}`}
           onClick={() => setActiveTab('crear')}
         >
-          ➕ Crear Usuario
+          Crear Usuario
         </button>
         <button 
           className={`admin__tab ${activeTab === 'certificado' ? 'active' : ''}`}
           onClick={() => setActiveTab('certificado')}
         >
-          📄 Subir Certificado
+          Subir Certificado
         </button>
       </div>
 
@@ -260,7 +263,7 @@ const AdminPanel = () => {
                           className="admin__btn admin__btn--danger"
                           onClick={() => handleEliminar(user._id, user.cedula)}
                         >
-                          🗑️
+                        Eliminar
                         </button>
                       </td>
                     </tr>
@@ -298,15 +301,6 @@ const AdminPanel = () => {
                   placeholder="Nombre del usuario"
                 />
               </div>
-              <div className="admin__field">
-                <label>Email (opcional)</label>
-                <input
-                  type="email"
-                  value={nuevoUsuario.email}
-                  onChange={(e) => setNuevoUsuario({...nuevoUsuario, email: e.target.value})}
-                  placeholder="correo@ejemplo.com"
-                />
-              </div>
               <button type="submit" className="admin__btn admin__btn--primary" disabled={loading}>
                 {loading ? 'Creando...' : 'Crear Usuario'}
               </button>
@@ -333,7 +327,7 @@ const AdminPanel = () => {
                     placeholder="Ingresa la cédula"
                   />
                   <button type="button" onClick={buscarUsuario} disabled={loading}>
-                    🔍 Buscar
+                    Buscar
                   </button>
                 </div>
               </div>
@@ -344,7 +338,7 @@ const AdminPanel = () => {
                   <p><strong>Usuario:</strong> {usuarioEncontrado.nombre}</p>
                   <p><strong>Cédula:</strong> {usuarioEncontrado.cedula}</p>
                   {usuarioEncontrado.certificado && (
-                    <p className="admin__warning">⚠️ Este usuario ya tiene un certificado. Se reemplazará.</p>
+                    <p className="admin__warning"> Este usuario ya tiene un certificado. Se reemplazará.</p>
                   )}
                 </div>
               )}
@@ -381,7 +375,7 @@ const AdminPanel = () => {
                 className="admin__btn admin__btn--primary" 
                 disabled={loading || !usuarioEncontrado}
               >
-                {loading ? 'Subiendo...' : '📤 Subir Certificado'}
+                {loading ? 'Subiendo...' : 'Subir Certificado'}
               </button>
             </form>
           </div>

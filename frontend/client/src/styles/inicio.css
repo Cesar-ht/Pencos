@@ -6,7 +6,14 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    background: linear-gradient(135deg, #424040 0%, #2d2d2d 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    width: 100%;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -14,7 +21,7 @@ body {
     padding: 20px;
 }
 
-main {
+main .form-section {
     width: 100%;
     max-width: 450px;
 }
@@ -55,16 +62,6 @@ main {
     background-clip: text;
 }
 
-.form__title::after {
-    content: "";
-    display: block;
-    width: 50%;
-    margin-left: 25%;
-    height: 2px;
-    background: linear-gradient(90deg, #ede74a, #c7bf21);
-    margin-top: 5px;
-}
-
 .form__group {
     margin-bottom: 24px;
     display: flex;
@@ -103,35 +100,30 @@ main {
     font-size: 14px;
 }
 
-.form__select {
-    padding: 14px 16px;
-    border: 2px solid #e0e0e0;
+.form__input:disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Mensaje de error */
+.form__error {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: #fadbd8;
+    border: 1px solid #e74c3c;
+    border-left: 4px solid #e74c3c;
     border-radius: 8px;
-    font-size: 15px;
-    color: #1a1a1a;
-    background-color: #f8f8f8;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 20px;
-    padding-right: 40px;
+    color: #c0392b;
+    font-size: 14px;
+    font-weight: 500;
+    animation: shake 0.4s ease-out;
 }
 
-.form__select:focus {
-    outline: none;
-    border-color: #FFC107;
-    background-color: white;
-    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
-}
-
-.form__select option {
-    color: #1a1a1a;
-    background-color: white;
-    padding: 10px;
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
 }
 
 .form__button {
@@ -152,15 +144,36 @@ main {
     box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
 }
 
-.form__button:hover {
+.form__button:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
     background: linear-gradient(135deg, #FFB300 0%, #FFA000 100%);
 }
 
-.form__button:active {
+.form__button:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: 0 2px 10px rgba(255, 193, 7, 0.3);
+}
+
+.form__button:disabled,
+.form__button--loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.form__button--loading {
+    position: relative;
+    color: transparent;
+}
+
+.form__button--loading::after {
+    content: 'Iniciando sesión...';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #1a1a1a;
 }
 
 .form__links {
@@ -211,15 +224,65 @@ main {
     width: 100%;
 }
 
-/* Validación de formulario */
-.form__input:invalid:not(:placeholder-shown) {
-    border-color: #e74c3c;
-    background-color: #fadbd8;
+/* Subtítulo */
+.form__subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-top: -20px;
+    margin-bottom: 25px;
 }
 
-.form__input:valid:not(:placeholder-shown) {
-    border-color: #27ae60;
-    background-color: #d5f4e6;
+/* Hint / ayuda */
+.form__hint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* Mensaje de éxito */
+.form__success {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: #d4edda;
+    border: 1px solid #27ae60;
+    border-left: 4px solid #27ae60;
+    border-radius: 8px;
+    color: #155724;
+    font-size: 14px;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Botón volver */
+.form__back-btn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form__back-btn:hover {
+    color: #FFC107;
 }
 
 /* Responsive */

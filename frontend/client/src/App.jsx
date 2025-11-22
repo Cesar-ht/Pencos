@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/pages/Login';
-import InicioUser from './components/pages/InicioUser';
-import AdminPanel from './components/pages/AdminPanel';
+import Login from './pages/auth/Login';
+import InicioUser from './pages/user/InicioUser';
+import AdminPanel from './pages/admin/AdminPanel';
+import './App.css'
 
 // Componente para proteger rutas
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -14,11 +15,9 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   }
 
   if (requiredRole && rol !== requiredRole) {
-    // Si requiere admin y no es admin, redirigir a inicio usuario
     if (requiredRole === 'admin') {
       return <Navigate to="/InicioUser" replace />;
     }
-    // Si requiere usuario normal y es admin, redirigir a admin
     return <Navigate to="/admin" replace />;
   }
 
@@ -42,7 +41,7 @@ function App() {
           } 
         />
         
-        {/* Ruta de admin */}
+        {/* Rutas de admin */}
         <Route 
           path="/admin" 
           element={

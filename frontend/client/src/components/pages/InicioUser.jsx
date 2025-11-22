@@ -1,304 +1,248 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import './../../styles/index.css'
-import API_URL from '../../config/api'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../../styles/index.css'
 
-function Inicio() {
-  const [juegos, setJuegos] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+const InicioUser = () => {
+  const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userData, setUserData] = useState({
+    cedula: '',
+    nombre: ''
+  });
+  const [certificateData, setCertificateData] = useState({
+    nombreArchivo: 'Certificado_Alturas.pdf',
+    fechaEmision: '15 de Junio de 2023',
+    fechaVencimiento: '15 de Junio de 2026',
+    estado: 'Vigente y Válido'
+  });
 
+  // Obtener datos del usuario al montar el componente
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    setIsAuthenticated(!!token)
-    
-    if (token) {
-      fetchJuegos()
-    } else {
-      setLoading(false)
-    }
-  }, [])
+    const cedula = localStorage.getItem('usuario');
+    const nombre = localStorage.getItem('nombre') || 'Usuario';
+   
 
-  const fetchJuegos = async () => {
-    try {
-      const token = localStorage.getItem('token')
-      
-      const response = await fetch(`${API_URL}/games/user/biblioteca`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+    setUserData({
+      cedula: cedula,
+      nombre: nombre
+    });
+  }, [navigate]);
 
-      if (!response.ok) {
-        throw new Error('Error al cargar los juegos')
+  // Cerrar dropdown al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.nav__dropdown')) {
+        setDropdownOpen(false);
       }
+    };
 
-      const data = await response.json()
-      
-      // Ordenar por más recientes
-      const juegosOrdenados = data.sort((a, b) => {
-        if (a.createdAt && b.createdAt) {
-          return new Date(b.createdAt) - new Date(a.createdAt)
-        }
-        return 0
-      })
-      
-      setJuegos(juegosOrdenados)
-    } catch (error) {
-      console.error('Error:', error)
-      setError('No se pudieron cargar los juegos')
-    } finally {
-      setLoading(false)
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Cerrar modal con Escape
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setModalOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, []);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const openModal = () => {
+    setModalOpen(true);
+    setDropdownOpen(false);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleLogout = async () => {
+  try {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  } catch (err) {
+    console.error('Error al cerrar sesión:', err);
+  } finally {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('nombre');
+    navigate('/login');
+  }
+};
+
+const downloadPDF = () => {
+  const token = localStorage.getItem('token');
+  
+  fetch('/api/certificate/download', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
     }
-  }
-
-  // Estadísticas
-  const totalJuegos = juegos.length
-  const juegosCompletados = juegos.filter(j => j.completado).length
-  const horasTotales = juegos.reduce((sum, j) => sum + (j.horasJugadas || j.tiempoJugado || 0), 0)
-
-  if (loading) {
-    return (
-      <div className="inicio-loading">
-        <p>Cargando...</p>
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <>
-        {/* Hero Section para no autenticados */}
-        <div className="hero-section">
-          <h2 className="hero-title">
-            Bienvenido a GameTracker
-          </h2>
-          <h4 className="hero-subtitle">
-            Tu biblioteca personal de videojuegos
-          </h4>
-        </div>
-
-        {/* Mensaje para iniciar sesión */}
-        <div className="empty-state">
-          <div className="empty-state-icon"></div>
-          <h4>Inicia sesión para comenzar</h4>
-          <p>
-            Crea una cuenta o inicia sesión para gestionar tu biblioteca de videojuegos
-          </p>
-          <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
-            <Link to="/login">
-              <button className="empty-state-button">
-                Iniciar Sesión
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="empty-state-button">
-                Registrarse
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Información sobre qué ofrece la app */}
-        <div className="quick-access-section">
-          <h3 className="section-title">¿Qué puedes hacer?</h3>
-          <div className="quick-access-grid">
-            <div className="quick-access-card">
-              <div className="quick-access-icon"></div>
-              <h4 className="quick-access-title">
-                Gestiona tu Biblioteca
-              </h4>
-              <p className="quick-access-description">
-                Organiza y rastrea todos tus videojuegos en un solo lugar
-              </p>
-            </div>
-
-            <div className="quick-access-card">
-              <div className="quick-access-icon"></div>
-              <h4 className="quick-access-title">
-                Explora la Tienda
-              </h4>
-              <p className="quick-access-description">
-                Descubre nuevos juegos y agrégalos a tu colección
-              </p>
-            </div>
-
-            <div className="quick-access-card">
-              <div className="quick-access-icon"></div>
-              <h4 className="quick-access-title">
-                Marca Progreso
-              </h4>
-              <p className="quick-access-description">
-                Lleva el control de los juegos que has completado
-              </p>
-            </div>
-          </div>
-        </div>
-      </>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="inicio-error">
-        <p>{error}</p>
-        <button onClick={fetchJuegos}>
-          Reintentar
-        </button>
-      </div>
-    )
-  }
+  })
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = certificateData.nombreArchivo;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    })
+    .catch(err => {
+      console.error('Error al descargar:', err);
+      alert('Error al descargar el certificado');
+    });
+};
 
   return (
     <>
-      {/* Hero Section para usuarios autenticados */}
-      <div className="hero-section">
-        <h2 className="hero-title">
-          Bienvenido a GameTracker
-        </h2>
-        <h4 className="hero-subtitle">
-          Tu biblioteca personal de videojuegos
-        </h4>
+      {/* Navegación */}
+      <nav>
+        <div className="nav__logo">
+          <div className="nav__logo-icon">⚙</div>
+          <span className="nav__logo-text">ITSA</span>
+        </div>
+
+        <div className="nav__user-section">
+          <div className="nav__user-info">
+            <div className="nav__user-avatar">CD</div>
+            <div className="nav__user-details">
+              <span className="nav__user-name">Cédula</span>
+              <span className="nav__user-id">{userData.cedula}</span>
+            </div>
+          </div>
+
+          <div className="nav__dropdown">
+            <button className="nav__menu-btn" onClick={toggleDropdown}>
+              ☰ Menú
+            </button>
+            {dropdownOpen && (
+              <div className="nav__dropdown-menu active" id="dropdownMenu">
+                <button 
+                  className="nav__dropdown-item" 
+                  onClick={openModal}
+                >
+                  📄 Ver Certificado
+                </button>
+                <button 
+                  className="nav__dropdown-item"
+                  style={{ color: '#e74c3c' }}
+                  onClick={handleLogout}
+                >
+                  🚪 Cerrar Sesión
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Contenido Principal */}
+      <div className="container">
+        <div className="dashboard__header">
+          <h1 className="dashboard__title">Bienvenido, {userData.nombre}</h1>
+          <p className="dashboard__subtitle">
+            Aquí puedes descargar tu certificado
+          </p>
+        </div>
+
+        <div className="dashboard__content">
+          <div className="card">
+            <div className="card__title">
+              <div className="card__icon">📄</div>
+              Certificado de Alturas
+            </div>
+            <div className="card__description">
+              Descarga tu certificado oficial de competencia en trabajo en alturas vigente.
+            </div>
+            <button className="card__button" onClick={openModal}>
+              Descargar Certificado
+            </button>
+          </div>
+        </div>
       </div>
-      
-      {/* Estadísticas Rápidas */}
-      {juegos.length > 0 && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon"></div>
-            <div className="stat-value">{totalJuegos}</div>
-            <div className="stat-label">Juegos en Biblioteca</div>
-          </div>
 
-          <div className="stat-card">
-            <div className="stat-icon"></div>
-            <div className="stat-value">{juegosCompletados}</div>
-            <div className="stat-label">Completados</div>
-          </div>
+      {/* Modal de Certificado */}
+      {modalOpen && (
+        <div 
+          className="modal active"
+          onClick={(e) => e.target === e.currentTarget && closeModal()}
+        >
+          <div className="modal__content">
+            <div className="modal__header">
+              <h2 className="modal__title">📄 Certificado de Alturas</h2>
+              <button 
+                className="modal__close" 
+                onClick={closeModal}
+              >
+                ✕
+              </button>
+            </div>
 
-          <div className="stat-card">
-            <div className="stat-icon"></div>
-            <div className="stat-value">{horasTotales}h</div>
-            <div className="stat-label">Horas Jugadas</div>
+            <div className="modal__body">
+              <div className="modal__field">
+                <label className="modal__label">Nombre del Certificado</label>
+                <div className="modal__value">
+                  Certificado_Alturas_{userData.cedula}.pdf
+                </div>
+              </div>
+
+              <div className="modal__field">
+                <label className="modal__label">Fecha de Emisión</label>
+                <div className="modal__value">{certificateData.fechaEmision}</div>
+              </div>
+
+              <div className="modal__field">
+                <label className="modal__label">Fecha de Vencimiento</label>
+                <div className="modal__value">
+                  {certificateData.fechaVencimiento}
+                </div>
+              </div>
+
+              <div className="modal__field">
+                <label className="modal__label">Estado</label>
+                <div className="modal__value" style={{ color: '#27ae60' }}>
+                  ✓ {certificateData.estado}
+                </div>
+              </div>
+            </div>
+
+            <div className="modal__actions">
+              <button 
+                className="modal_button modal_button-primary"
+                onClick={downloadPDF}
+              >
+                ⬇ Descargar PDF
+              </button>
+              <button 
+                className="modal_button modal_button-secondary"
+                onClick={closeModal}
+              >
+                Cerrar
+              </button>
+            </div>
           </div>
         </div>
       )}
-
-      {/* Accesos Rápidos */}
-      <div className="quick-access-section">
-        <h3 className="section-title">Accesos rápidos</h3>
-        <div className="quick-access-grid">
-          <Link to="/tienda" className="quick-access-link">
-            <div className="quick-access-card">
-              <div className="quick-access-icon"></div>
-              <h4 className="quick-access-title">
-                Explorar Tienda
-              </h4>
-              <p className="quick-access-description">
-                Descubre nuevos juegos y agrégalos a tu biblioteca
-              </p>
-            </div>
-          </Link>
-
-          <Link to="/biblioteca" className="quick-access-link">
-            <div className="quick-access-card">
-              <div className="quick-access-icon"></div>
-              <h4 className="quick-access-title">
-                Mi Biblioteca
-              </h4>
-              <p className="quick-access-description">
-                Gestiona tu colección y marca juegos como completados
-              </p>
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* Juegos Agregados Recientemente */}
-      <div className="recent-games-section">
-        <div className="recent-games-header">
-          <h3 className="recent-games-title">
-            {juegos.length === 0 ? 'Tus Juegos' : 'Agregados Recientemente'}
-          </h3>
-          {juegos.length > 6 && (
-            <Link to="/biblioteca">
-              <button className="view-all-button">
-                Ver Todos ({juegos.length}) →
-              </button>
-            </Link>
-          )}
-        </div>
-
-        {juegos.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-state-icon"></div>
-            <h4>Aún no tienes juegos en tu biblioteca</h4>
-            <p>
-              Comienza explorando la tienda y agrega tus juegos favoritos
-            </p>
-            <Link to="/tienda">
-              <button className="empty-state-button">
-                Ir a la Tienda
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <div className="games-grid">
-            {juegos.slice(0, 6).map(juego => (
-              <Link 
-                to={`/juego/${juego._id}`} 
-                key={juego._id} 
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <div className="game-card">
-                  {juego.imagenPortada && (
-                    <img 
-                      src={juego.imagenPortada} 
-                      alt={juego.titulo}
-                      className="game-image"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/280x160?text=Sin+Imagen'
-                      }}
-                    />
-                  )}
-                  
-                  <div className="game-content">
-                    <h4 className="game-title">
-                      {juego.titulo}
-                    </h4>
-                    
-                    <div className="game-info">
-                      <span>{juego.plataforma}</span>
-                      <span>{juego.genero}</span>
-                    </div>
-
-                    {juego.añoLanzamiento && (
-                      <p className="game-year">
-                        Año: {juego.añoLanzamiento}
-                      </p>
-                    )}
-
-                    <div className="game-footer">
-                      <span className={`game-status ${juego.completado ? 'completado' : 'en-progreso'}`}>
-                        {juego.completado ? 'Completado' : 'En progreso'}
-                      </span>
-
-                      {(juego.horasJugadas > 0 || juego.tiempoJugado > 0) && (
-                        <span className="game-hours">
-                          {juego.horasJugadas || juego.tiempoJugado}h
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
     </>
-  )
-}
+  );
+};
 
-export default Inicio
+export default InicioUser;

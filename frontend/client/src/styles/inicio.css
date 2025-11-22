@@ -55,6 +55,16 @@ main {
     background-clip: text;
 }
 
+.form__title::after {
+    content: "";
+    display: block;
+    width: 50%;
+    margin-left: 25%;
+    height: 2px;
+    background: linear-gradient(90deg, #ede74a, #c7bf21);
+    margin-top: 5px;
+}
+
 .form__group {
     margin-bottom: 24px;
     display: flex;

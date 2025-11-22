@@ -22,6 +22,10 @@ const InicioUser = () => {
     const cedula = localStorage.getItem('usuario');
     const nombre = localStorage.getItem('nombre') || 'Usuario';
    
+    if (!cedula) {
+          navigate('/sesion');
+          return;
+        }
 
     setUserData({
       cedula: cedula,

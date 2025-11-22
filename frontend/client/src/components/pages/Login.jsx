@@ -30,7 +30,6 @@ const Login = () => {
 
     setLoading(true);
     try {
-      // Aquí va tu llamada a la API del backend
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -45,12 +44,16 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Guardar token en localStorage o contexto
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', data.usuario);
+        localStorage.setItem('nombre', data.nombre);
+        localStorage.setItem('rol', data.rol);
         
-        // Redirigir al dashboard
-        navigate('/dashboard');
+        if (data.rol === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/InicioUser');
+        }
       } else {
         setError(data.message || 'Error al iniciar sesión');
       }
@@ -69,41 +72,33 @@ const Login = () => {
           <h2 className="form__title">Inicio de sesión</h2>
 
           {error && (
-            <div style={{
-              padding: '12px',
-              marginBottom: '16px',
-              background: '#fadbd8',
-              border: '1px solid #e74c3c',
-              borderRadius: '6px',
-              color: '#e74c3c',
-              fontSize: '14px'
-            }}>
+            <div className="form__error">
               {error}
             </div>
           )}
 
           <div className="form__group">
-            <label htmlFor="usuario" className="form__label">Usuario</label>
+            <label htmlFor="usuario" className="form__label">Cédula</label>
             <input
               type="text"
               className="form__input"
-              id="Loginuser"
+              id="usuario"
               name="usuario"
-              placeholder="Ingresa el usuario"
+              placeholder="Ingresa tu número de cédula"
               value={formData.usuario}
               onChange={handleChange}
               disabled={loading}
             />
           </div>
 
-          <div className="form__group" style={{ position: 'relative' }}>
+          <div className="form__group">
             <label htmlFor="contraseña" className="form__label">Contraseña</label>
             <input
               type="password"
               className="form__input"
-              id="loginPass"
+              id="contraseña"
               name="contraseña"
-              placeholder="Número de Identificación"
+              placeholder="Ingresa tu contraseña"
               value={formData.contraseña}
               onChange={handleChange}
               disabled={loading}
@@ -112,32 +107,20 @@ const Login = () => {
 
           <button 
             type="submit" 
-            className="form__button"
+            className={`form__button ${loading ? 'form__button--loading' : ''}`}
             disabled={loading}
-            style={{
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
           >
             {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
 
           <div className="form__links">
             <p>
-              ¿No tienes cuenta? <br />
+              ¿No tienes cuenta?<br />
               <a href="/registrar" onClick={(e) => {
                 e.preventDefault();
                 navigate('/registrar');
               }}>
                 Regístrate aquí
-              </a>
-            </p>
-            <p>
-              <a href="/recuperar" onClick={(e) => {
-                e.preventDefault();
-                navigate('/recuperar');
-              }}>
-                Olvidé mi contraseña
               </a>
             </p>
           </div>

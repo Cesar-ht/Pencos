@@ -1,0 +1,299 @@
+/* ========== Admin Panel Styles ========== */
+.admin {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* Navegación */
+.admin__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #2c3e50;
+  color: white;
+}
+
+.admin__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.admin__logo-icon {
+  font-size: 1.5rem;
+}
+
+.admin__logout {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.admin__logout:hover {
+  background: #c0392b;
+}
+
+/* Mensaje de alerta */
+.admin__mensaje {
+  padding: 1rem 2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.admin__mensaje--exito {
+  background: #d4edda;
+  color: #155724;
+}
+
+.admin__mensaje--error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Tabs */
+.admin__tabs {
+  display: flex;
+  gap: 0;
+  background: #fff;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 0 2rem;
+}
+
+.admin__tab {
+  padding: 1rem 1.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.admin__tab:hover {
+  color: #2c3e50;
+  background: #f8f9fa;
+}
+
+.admin__tab.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+  font-weight: 600;
+}
+
+/* Contenido */
+.admin__content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin__section h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+/* Tabla */
+.admin__table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-collapse: collapse;
+}
+
+.admin__table th,
+.admin__table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.admin__table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.admin__table tr:hover {
+  background: #f8f9fa;
+}
+
+/* Badges */
+.admin__badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.admin__badge--ok {
+  background: #d4edda;
+  color: #155724;
+}
+
+.admin__badge--pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Formulario */
+.admin__form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  max-width: 500px;
+}
+
+.admin__field {
+  margin-bottom: 1.25rem;
+}
+
+.admin__field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.admin__field input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.admin__field input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.admin__field small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+/* Búsqueda */
+.admin__search {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin__search input {
+  flex: 1;
+}
+
+.admin__search button {
+  padding: 0.75rem 1rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin__search button:hover {
+  background: #2980b9;
+}
+
+/* Usuario encontrado */
+.admin__user-found {
+  background: #e8f4fd;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  border-left: 4px solid #3498db;
+}
+
+.admin__user-found p {
+  margin: 0.25rem 0;
+}
+
+.admin__warning {
+  color: #856404;
+  margin-top: 0.5rem !important;
+}
+
+/* Botones */
+.admin__btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.admin__btn--primary {
+  background: #3498db;
+  color: white;
+  width: 100%;
+}
+
+.admin__btn--primary:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.admin__btn--primary:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.admin__btn--danger {
+  background: #e74c3c;
+  color: white;
+  padding: 0.5rem 0.75rem;
+}
+
+.admin__btn--danger:hover {
+  background: #c0392b;
+}
+
+/* Empty state */
+.admin__empty {
+  text-align: center;
+  color: #888;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin__tabs {
+    flex-wrap: wrap;
+    padding: 0;
+  }
+  
+  .admin__tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .admin__content {
+    padding: 1rem;
+  }
+  
+  .admin__table {
+    font-size: 0.9rem;
+  }
+  
+  .admin__table th,
+  .admin__table td {
+    padding: 0.75rem 0.5rem;
+  }
+}

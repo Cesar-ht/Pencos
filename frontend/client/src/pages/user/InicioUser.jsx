@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchAPI } from '../../config/api';
 import '../../styles/index.css';
 
 const InicioUser = () => {
@@ -33,7 +34,7 @@ const InicioUser = () => {
   const obtenerCertificado = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/certificate/me', {
+      const res = await fetchAPI('/api/certificate/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -105,7 +106,7 @@ const InicioUser = () => {
 
   const downloadPDF = async () => {
     try {
-      const res = await fetch('/api/certificate/download', {
+      const res = await fetchAPI('/api/certificate/download', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

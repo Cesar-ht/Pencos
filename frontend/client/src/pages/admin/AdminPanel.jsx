@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchAPI } from '../../config/api';
 import '../../styles/admin.css';
 
 const AdminPanel = () => {
@@ -44,7 +45,7 @@ const AdminPanel = () => {
   const cargarUsuarios = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/users', {
+      const res = await fetchAPI('/api/users', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -71,16 +72,12 @@ const AdminPanel = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/users/crear', {
+      const res = await fetchAPI('/api/users/crear', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
         body: JSON.stringify({
           cedula: nuevoUsuario.cedula,
           nombre: nuevoUsuario.nombre
-        })
+        })  
       });
       const data = await res.json();
 
@@ -104,7 +101,7 @@ const AdminPanel = () => {
     
     setLoading(true);
     try {
-      const res = await fetch(`/api/users/buscar/${certForm.cedula}`, {
+      const res = await fetchAPI(`/api/users/buscar/${certForm.cedula}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -140,7 +137,7 @@ const AdminPanel = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/certificate/upload', {
+      const res = await fetchAPI('/api/certificate/upload', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -167,7 +164,7 @@ const AdminPanel = () => {
     if (!window.confirm(`¿Eliminar usuario ${cedula}?`)) return;
 
     try {
-      const res = await fetch(`/api/users/${id}`, {
+      const res = await fetchAPI(`/api/users/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

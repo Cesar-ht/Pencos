@@ -1,6 +1,5 @@
 import Certificate from '../models/Certificate.js';
 import User from '../models/User.js';
-import fs from 'fs';
 
 // [ADMIN] Subir certificado para un usuario
 export const subirCertificado = async (req, res) => {
@@ -21,21 +20,16 @@ export const subirCertificado = async (req, res) => {
       await Certificate.findByIdAndDelete(usuario.certificado);
     }
 
-    // Leer el archivo PDF como Buffer
-    const archivoPDF = fs.readFileSync(req.file.path);
-
+    // El archivo ya viene como buffer en req.file.buffer (multer memoryStorage)
     const certificado = await Certificate.create({
       usuario: usuarioId,
       nombreArchivo: `Certificado_Alturas_${usuario.cedula}.pdf`,
-      archivoPDF: archivoPDF,
+      archivoPDF: req.file.buffer,
       tipoArchivo: req.file.mimetype,
       fechaEmision: new Date(fechaEmision),
       fechaVencimiento: new Date(fechaVencimiento),
       subidoPor: req.user.id
     });
-
-    // Eliminar archivo temporal del servidor
-    fs.unlinkSync(req.file.path);
 
     // Asociar certificado al usuario
     usuario.certificado = certificado._id;
@@ -52,10 +46,6 @@ export const subirCertificado = async (req, res) => {
       }
     });
   } catch (err) {
-    // Limpiar archivo temporal si hay error
-    if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
     res.status(500).json({ message: 'Error al subir certificado', error: err.message });
   }
 };

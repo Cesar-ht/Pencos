@@ -141,11 +141,7 @@ const InicioUser = () => {
 
         <div className="nav__user-section">
           <div className="nav__user-info">
-            <div className="nav__user-avatar">
-              {userData.nombre.charAt(0).toUpperCase()}
-            </div>
             <div className="nav__user-details">
-              <span className="nav__user-name">{userData.nombre}</span>
               <span className="nav__user-id">{userData.cedula}</span>
             </div>
           </div>
@@ -177,7 +173,7 @@ const InicioUser = () => {
       {/* Contenido Principal */}
       <div className="container">
         <div className="dashboard__header">
-          <h1 className="dashboard__title">Bienvenido, {userData.nombre}</h1>
+          <h1 className="dashboard__title">Bienvenido, {userData.cedula}</h1>
           <p className="dashboard__subtitle">
             {certificateData 
               ? 'Aquí puedes descargar tu certificado'

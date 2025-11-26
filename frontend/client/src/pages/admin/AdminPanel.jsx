@@ -65,8 +65,8 @@ const AdminPanel = () => {
   // Crear usuario
   const handleCrearUsuario = async (e) => {
     e.preventDefault();
-    if (!nuevoUsuario.cedula || !nuevoUsuario.nombre) {
-      mostrarMensaje('error', 'Cédula y nombre son requeridos');
+    if (!nuevoUsuario.cedula) {
+      mostrarMensaje('error', 'Cédula es requerida');
       return;
     }
 
@@ -76,14 +76,13 @@ const AdminPanel = () => {
         method: 'POST',
         body: JSON.stringify({
           cedula: nuevoUsuario.cedula,
-          nombre: nuevoUsuario.nombre
         })  
       });
       const data = await res.json();
 
       if (res.ok) {
         mostrarMensaje('exito', `Usuario ${nuevoUsuario.cedula} creado. Contraseña: ${nuevoUsuario.cedula}`);
-        setNuevoUsuario({ cedula: '', nombre: '' });
+        setNuevoUsuario({ cedula: '' });
         cargarUsuarios();
       } else {
         mostrarMensaje('error', data.message);
@@ -108,7 +107,7 @@ const AdminPanel = () => {
 
       if (res.ok) {
         setUsuarioEncontrado(data);
-        mostrarMensaje('exito', `Usuario encontrado: ${data.nombre}`);
+        mostrarMensaje('exito', `Usuario encontrado: ${data.cedula}`);
       } else {
         setUsuarioEncontrado(null);
         mostrarMensaje('error', 'Usuario no encontrado');
@@ -238,7 +237,6 @@ const AdminPanel = () => {
                 <thead>
                   <tr>
                     <th>Cédula</th>
-                    <th>Nombre</th>
                     <th>Certificado</th>
                     <th>Acciones</th>
                   </tr>
@@ -247,7 +245,6 @@ const AdminPanel = () => {
                   {usuarios.filter(u => u.rol !== 'admin').map(user => (
                     <tr key={user._id}>
                       <td>{user.cedula}</td>
-                      <td>{user.nombre}</td>
                       <td>
                         {user.certificado ? (
                           <span className="admin__badge admin__badge--ok">✓ Asignado</span>
@@ -289,15 +286,6 @@ const AdminPanel = () => {
                 />
                 <small>Esta será también la contraseña inicial</small>
               </div>
-              <div className="admin__field">
-                <label>Nombre Completo *</label>
-                <input
-                  type="text"
-                  value={nuevoUsuario.nombre}
-                  onChange={(e) => setNuevoUsuario({...nuevoUsuario, nombre: e.target.value})}
-                  placeholder="Nombre del usuario"
-                />
-              </div>
               <button type="submit" className="admin__btn admin__btn--primary" disabled={loading}>
                 {loading ? 'Creando...' : 'Crear Usuario'}
               </button>
@@ -332,7 +320,6 @@ const AdminPanel = () => {
               {/* Info usuario encontrado */}
               {usuarioEncontrado && (
                 <div className="admin__user-found">
-                  <p><strong>Usuario:</strong> {usuarioEncontrado.nombre}</p>
                   <p><strong>Cédula:</strong> {usuarioEncontrado.cedula}</p>
                   {usuarioEncontrado.certificado && (
                     <p className="admin__warning"> Este usuario ya tiene un certificado. Se reemplazará.</p>

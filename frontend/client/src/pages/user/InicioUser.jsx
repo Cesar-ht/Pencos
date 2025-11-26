@@ -24,7 +24,7 @@ const InicioUser = () => {
       return;
     }
 
-    setUserData({ cedula, nombre });
+    setUserData({ cedula });
     obtenerCertificado();
   }, [navigate, token]);
 

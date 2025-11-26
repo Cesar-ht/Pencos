@@ -10,10 +10,9 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState({ tipo: '', texto: '' });
   
-  // Form nuevo usuario (sin email)
+  // Form nuevo usuario 
   const [nuevoUsuario, setNuevoUsuario] = useState({
     cedula: '',
-    nombre: ''
   });
 
   // Form subir certificado
@@ -257,7 +256,7 @@ const AdminPanel = () => {
                           className="admin__btn admin__btn--danger"
                           onClick={() => handleEliminar(user._id, user.cedula)}
                         >
-                        Eliminar
+                          Eliminar
                         </button>
                       </td>
                     </tr>

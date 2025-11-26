@@ -32,13 +32,13 @@ router.get('/buscar/:cedula', proteger, soloAdmin, async (req, res) => {
   }
 });
 
-// [ADMIN] Crear usuario (cédula = usuario = contraseña)
+// [ADMIN] Crear usuario (solo cédula)
 router.post('/crear', proteger, soloAdmin, async (req, res) => {
   try {
-    const { cedula, nombre } = req.body;
+    const { cedula } = req.body;
 
-    if (!cedula || !nombre) {
-      return res.status(400).json({ message: 'Cédula y nombre son requeridos' });
+    if (!cedula) {
+      return res.status(400).json({ message: 'Cédula es requerida' });
     }
 
     const existe = await User.findOne({ cedula });
@@ -48,7 +48,7 @@ router.post('/crear', proteger, soloAdmin, async (req, res) => {
 
     const usuario = await User.create({
       cedula,
-      nombre,
+      nombre: cedula,  // Nombre = cédula automáticamente
       contraseña: cedula
     });
 
@@ -56,8 +56,7 @@ router.post('/crear', proteger, soloAdmin, async (req, res) => {
       message: 'Usuario creado correctamente',
       usuario: {
         id: usuario._id,
-        cedula: usuario.cedula,
-        nombre: usuario.nombre
+        cedula: usuario.cedula
       }
     });
   } catch (err) {

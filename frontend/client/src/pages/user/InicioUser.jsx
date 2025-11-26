@@ -9,8 +9,7 @@ const InicioUser = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState({
-    cedula: '',
-    nombre: ''
+    cedula: ''
   });
   const [certificateData, setCertificateData] = useState(null);
 
@@ -19,7 +18,6 @@ const InicioUser = () => {
   // Obtener datos del usuario y certificado al montar
   useEffect(() => {
     const cedula = localStorage.getItem('usuario');
-    const nombre = localStorage.getItem('nombre') || 'Usuario';
    
     if (!cedula || !token) {
       navigate('/login');

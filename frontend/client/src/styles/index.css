@@ -94,8 +94,9 @@ nav {
 }
 
 .nav__user-id {
-    color: #bbb;
-    font-size: 12px;
+    color: #FFC107;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .nav__dropdown {
